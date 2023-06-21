@@ -1,0 +1,82 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dbboot
+    username: root
+    password: holmes96
+    
+    #开启druid功能
+    druid:
+      aop-patterns: com.admin #监控SpringBean
+      filters: stat,wall #底层开启功能，stat（sql监控），wall（防火墙）
+      
+      stat-view-servlet:
+        reset-enable: false  #监控配置页面功能
+        enabled: true
+        login-username: root
+        login-password: 123456
+
+      web-stat-filter: # 监控web
+        enabled: true
+        url-pattern: /* #监控的地址
+        exclusions:  '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'   #放行的地址，此处为默认设置
+        
+      filter:
+        stat:  #对上面filters里面的stat的详细配置
+          log-slow-sql: true
+          slow-sql-millis: 1000 #超出这数据视为慢sql
+          enabled: true
+        wall:
+          enabled: true
+          config:
+            drop-table-allow: false
+
+  boot:
+    admin:
+      client:
+        url: http://localhost:8888
+        
+  application:
+    name: web-admin
+          
+#  ● 导入mybatis官方starter
+#  ● 编写mapper接口。标准@Mapper注解
+#  ● 编写sql映射文件并绑定mapper接口
+#  ● 在application.yaml中指定Mapper配置文件的位置，以及指定全局配置文件的信息 （建议；配置在mybatis.configuration）
+
+# 配置mybatis规则、使用MyBatisPlus则此项配置无效
+#mybatis:
+#  mapper-locations: classpath:mybatis/mapper/*.xml
+#  configuration:
+#    map-underscore-to-camel-case: true
+#  config-location: classpath:mybatis/mybatis-config.xml  #全局配置文件位置
+
+
+# management 是所有actuator的配置
+# management.endpoint.端点名.xxxx  对某个端点的具体配置
+management:
+  endpoints:
+    enabled-by-default: true #默认开启所有监控端点  true
+    web:
+      exposure:
+        include: '*' # 以web方式暴露所有端点
+
+  endpoint: #对某个端点的具体配置
+    health:
+      show-details: always
+      enabled: true
+
+    info:
+      enabled: true
+
+    beans:
+      enabled: true
+
+    metrics:
+      enabled: true
+  
+info:
+  appName: boot-admin
+  appVersion: 1.0.0
+  mavenProjectName: @project.artifactId@
+  mavenProjectVersion: @project.version@
